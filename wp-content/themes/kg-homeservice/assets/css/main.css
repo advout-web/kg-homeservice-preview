@@ -1,32 +1,40 @@
 /* =========================================================
-   Katagiri Home Service
-   Concept : くすんだ毎日を、ひと拭きで。
-   FV の「拭き取り」だけを主役にし、ほかは静かに整える。
+   Katagiri Home Service  v1.1
+   明朝体の見出し、白・生成り・墨色のセクションの交互、大きな番号の見出し。
+   FV の「拭き取り」は主役として残す。
    ========================================================= */
 
 :root {
-	--ink: #17313d;
-	--ink-2: #4a6370;
-	--ink-3: #6d838e;
-	--aqua: #1fa3dc;
-	--aqua-d: #0e7fb3;
-	--aqua-p: #e7f5fb;
-	--aqua-pp: #f4fafd;
+	--ink: #23302b;
+	--ink-2: #56625c;
+	--ink-3: #7d8781;
+	--aqua: #0b6a86;
+	--aqua-d: #0b6a86;
+	--aqua-p: #edf3f3;
+	--aqua-pp: #f8f7f2;
+	--accent: #0b6a86;
+	--accent-d: #084f64;
+	--accent-light: #6cc6e3;
 	--orange: #eb5a24;
-	--orange-d: #d4481a;
-	--yellow: #f7c51e;
+	--orange-d: #0b6a86;
+	--yellow: #e2a915;
 	--line: #06a64b;
 	--line-d: #058a3f;
-	--rule: #d5e6ee;
+	--rule: #dcdcd3;
 	--white: #fff;
-	--night: #10252f;
+	--paper: #f8f7f2;
+	--dark: #0c100e;
+	--night: #080b09;
+	--on-dark: rgba(255, 255, 255, .78);
+	--rule-dark: rgba(255, 255, 255, .18);
 
-	--jp: "M PLUS 1", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
-	--num: "Lexend", "M PLUS 1", "Hiragino Sans", sans-serif;
+	--jp: "Noto Sans JP", "Yu Gothic", YuGothic, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+	--mincho: "Shippori Mincho", "Yu Mincho", YuMincho, "Hiragino Mincho ProN", "Noto Serif JP", serif;
+	--num: Arial, "Helvetica Neue", Helvetica, sans-serif;
 
 	--header-h: 76px;
-	--radius: 14px;
-	--radius-s: 8px;
+	--radius: 4px;
+	--radius-s: 2px;
 	--ease: cubic-bezier(.65, .05, .36, 1);
 	--ease-out: cubic-bezier(.2, .7, .2, 1);
 }
@@ -195,14 +203,6 @@ button { font: inherit; color: inherit; }
 .fv__area { display: flex; align-items: center; gap: 6px; margin-top: 18px; font-size: 14px; color: var(--ink-2); }
 .fv__area .icon { width: 18px; height: 18px; color: var(--aqua-d); }
 
-/* ---------- 安心の4項目（FV に重ねる墨色の帯） ---------- */
-.marks { position: relative; z-index: 2; margin-top: -72px; }
-.marks__list { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--ink); color: #fff; border-radius: var(--radius); padding: 0; max-width: 1132px; overflow: hidden; }
-.marks__list li { display: flex; align-items: center; gap: 14px; padding: 26px 24px; line-height: 1.4; font-size: 13px; color: rgba(255, 255, 255, .78); }
-.marks__list li + li { border-left: 1px solid rgba(255, 255, 255, .14); }
-.marks__list strong { display: block; font-size: 18px; color: #fff; margin-bottom: 4px; }
-.marks__list .icon { width: 38px; height: 38px; color: var(--yellow); }
-
 /* =========================================================
    メニューと料金（値札リスト）
    ========================================================= */
@@ -230,7 +230,6 @@ button { font: inherit; color: inherit; }
 /* =========================================================
    水回りセット（点数を選ぶと、部屋のチップが点く）
    ========================================================= */
-.sets { background: var(--aqua-pp); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
 .sets__box { background: #fff; border: 1px solid var(--rule); border-radius: var(--radius); padding: 36px clamp(20px, 4vw, 48px) 32px; }
 .sets__tabs { display: inline-flex; gap: 4px; padding: 5px; background: var(--aqua-p); border-radius: 999px; margin-bottom: 32px; }
 .sets__tab { position: relative; border: 0; cursor: pointer; background: transparent; border-radius: 999px; padding: 10px 26px; font-weight: 700; font-size: 15px; color: var(--ink-2); transition: background-color .2s, color .2s; }
@@ -277,8 +276,7 @@ button { font: inherit; color: inherit; }
 /* =========================================================
    ご予約の流れ（実際の順序なので番号を振る）
    ========================================================= */
-.flow { background: var(--aqua-pp); border-top: 1px solid var(--rule); }
-.flow__list { counter-reset: flow; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); }
+.flow__list { counter-reset: flow; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--rule); }
 .flow__list li { counter-increment: flow; position: relative; padding: 28px 24px 8px 0; }
 .flow__list li + li { padding-left: 24px; border-left: 1px solid var(--rule); }
 .flow__list li::before { content: counter(flow); display: block; font-family: var(--num); font-weight: 600; font-size: 44px; line-height: 1; color: var(--aqua); margin-bottom: 14px; }
@@ -292,27 +290,7 @@ button { font: inherit; color: inherit; }
 .guarantee li { position: relative; padding-left: 1.4em; margin-top: 6px; }
 .guarantee li::before { content: ""; position: absolute; left: 0; top: .72em; width: 8px; height: 8px; border-radius: 2px; background: var(--orange-d); }
 
-/* =========================================================
-   対応エリア（琵琶湖の写真に重ねる）
-   ========================================================= */
-.area-sec { position: relative; padding: 120px 0; overflow: hidden; }
-.area-sec__photo { position: absolute; inset: 0; z-index: -1; }
-.area-sec__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 92%; }
-.area-sec__inner { display: flex; justify-content: flex-end; }
-.area-sec__card { background: #fff; border-radius: var(--radius); padding: 40px clamp(24px, 4vw, 48px); max-width: 600px; box-shadow: 0 24px 60px rgba(16, 37, 47, .18); }
-.area-sec__title { font-size: clamp(26px, 3vw, 36px); font-weight: 800; line-height: 1.4; }
-.area-sec__lead { margin: 14px 0 24px; color: var(--ink-2); }
-
-/* ---------- お客様の声（Google の口コミへ） ---------- */
-.review { padding: 72px 0; }
-.review__inner { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 32px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding-top: 36px; padding-bottom: 36px; }
-.review__stars { display: flex; gap: 2px; color: var(--yellow); }
-.review__stars .icon { width: 30px; height: 30px; }
-.review__title { font-size: 22px; font-weight: 800; line-height: 1.5; }
-.review__lead { color: var(--ink-2); font-size: 15px; }
-
 /* ---------- お知らせ ---------- */
-.news { padding-top: 40px; }
 .news__head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
 .news__head .heading { margin-bottom: 24px; }
 .news__body { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; }
@@ -335,35 +313,6 @@ button { font: inherit; color: inherit; }
 .post-card__date { font-family: var(--num); font-size: 14px; color: var(--ink-3); }
 .post-card__title { font-size: 18px; font-weight: 800; line-height: 1.55; margin-top: 4px; }
 .post-card__link:hover .post-card__title { color: var(--aqua-d); }
-
-/* =========================================================
-   ご相談の帯・フッター
-   ========================================================= */
-.cta-band { background: var(--ink); color: #fff; padding: 88px 0; }
-.cta-band__inner { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 56px; align-items: center; }
-.cta-band__title { font-size: clamp(26px, 3vw, 38px); font-weight: 800; line-height: 1.45; }
-.cta-band__lead { margin: 16px 0 28px; color: rgba(255, 255, 255, .78); }
-.cta-band__sub { margin-top: 20px; }
-.cta-band__sub a { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; text-underline-offset: 4px; }
-.cta-band__sub .icon { width: 22px; height: 22px; }
-.cta-band__line { background: #fff; color: var(--ink); border-radius: var(--radius); padding: 30px 28px; }
-.cta-band__line-title { font-size: 19px; font-weight: 800; line-height: 1.5; }
-.cta-band__line-id { margin: 8px 0 18px; font-family: var(--num); color: var(--ink-2); font-size: 15px; }
-
-.site-footer { background: var(--night); color: rgba(255, 255, 255, .78); padding: 64px 0 0; font-size: 14px; }
-.site-footer__inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; }
-.site-footer__logo img { width: 240px; }
-.site-footer__desc { margin: 18px 0; line-height: 1.9; }
-.site-footer__line { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; text-decoration: none; border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px; padding: 8px 18px; }
-.site-footer__line .icon { width: 18px; height: 18px; color: #3fd27c; }
-.site-footer__line:hover { color: #fff; border-color: #fff; }
-.site-footer__nav { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-.site-footer__h { color: #fff; font-weight: 800; margin-bottom: 10px; }
-.site-footer__nav li a { display: inline-block; padding: 4px 0; color: rgba(255, 255, 255, .78); text-decoration: none; }
-.site-footer__nav li a:hover { color: #fff; text-decoration: underline; }
-.site-footer__copy { text-align: center; margin-top: 56px; padding: 18px; border-top: 1px solid rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .55); }
-
-.sp-bar { display: none; }
 
 /* =========================================================
    下層ページの見出し帯（帯が左から拭かれるように現れる）
@@ -417,7 +366,7 @@ button { font: inherit; color: inherit; }
 .svc__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 28px; }
 .svc--detail { border-top: 0; padding-top: 0; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); }
 .svc--detail .svc__lead { font-size: 17px; }
-.svc-flow { background: var(--aqua-pp); border-top: 1px solid var(--rule); }
+.svc-flow { background: var(--paper); }
 
 /* ---------- 水回りセットのページ ---------- */
 .set-page__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
@@ -572,15 +521,11 @@ button { font: inherit; color: inherit; }
 
 @media (max-width: 960px) {
 	.sec { padding: 72px 0; }
-	.menu__inner, .oidaki__inner, .cta-band__inner, .site-footer__inner, .news__body, .about-page__inner, .form-page__inner, .svc, .svc--detail { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+	.menu__inner, .oidaki__inner, .news__body, .about-page__inner, .form-page__inner, .svc, .svc--detail { grid-template-columns: minmax(0, 1fr); gap: 32px; }
 	.menu__head, .form-page__side, .svc--list .svc__media { position: static; }
-	.marks__list { grid-template-columns: repeat(2, 1fr); }
-	.marks__list li:nth-child(3) { border-left: 0; }
-	.marks__list li:nth-child(n+3) { border-top: 1px solid rgba(255, 255, 255, .14); }
 	.flow__list { grid-template-columns: repeat(2, 1fr); }
 	.flow__list li:nth-child(3) { padding-left: 0; border-left: 0; }
 	.flow__list li:nth-child(n+3) { border-top: 1px solid var(--rule); }
-	.review__inner { grid-template-columns: minmax(0, 1fr); gap: 16px; }
 	.post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 	.form-page__form { order: -1; }
 	.svc { padding: 48px 0; }
@@ -605,11 +550,6 @@ button { font: inherit; color: inherit; }
 	.fv .cta-buttons .btn { flex: 1 1 100%; }
 	.fv__handle { width: 70px; left: -76px; }
 
-	.marks { margin-top: -64px; }
-	.marks__list { padding: 0; margin: 0 16px; width: auto; }
-	.marks__list li { padding: 16px 14px; gap: 10px; font-size: 12px; }
-	.marks__list strong { font-size: 15px; }
-	.marks__list .icon { width: 30px; height: 30px; }
 
 	.price-row__link { grid-template-columns: 40px minmax(0, 1fr) 20px; gap: 4px 14px; padding: 18px 4px; }
 	.price-row__icon { width: 38px; height: 38px; grid-row: span 2; align-self: start; }
@@ -632,10 +572,6 @@ button { font: inherit; color: inherit; }
 	.flow__list li:first-child { border-top: 0; }
 	.flow__list li::before { position: absolute; left: 0; top: 22px; font-size: 36px; }
 
-	.area-sec { padding: 0 0 48px; }
-	.area-sec__photo { position: relative; height: 220px; }
-	.area-sec__inner { margin-top: -48px; }
-	.area-sec__card { padding: 28px 22px; }
 
 	.page-hero__band { padding: 32px 20px; padding-right: 92px; }
 	.page-hero__icon { width: 60px; height: 60px; right: 16px; }
@@ -645,7 +581,6 @@ button { font: inherit; color: inherit; }
 	.set-card__btns { grid-template-columns: minmax(0, 1fr); }
 	.about-table div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
 	.svc__table th { width: 7.5em; }
-	.site-footer__nav { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 
 	.sp-bar { position: fixed; inset: auto 0 0; z-index: 900; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); background: rgba(255, 255, 255, .96); border-top: 1px solid var(--rule); }
 	.sp-bar__btn { display: flex; align-items: center; justify-content: center; gap: 8px; height: 50px; border-radius: 999px; color: #fff; font-weight: 800; text-decoration: none; }
@@ -653,6 +588,241 @@ button { font: inherit; color: inherit; }
 	.sp-bar__btn--line { background: var(--line); }
 	.sp-bar__btn--reserve { background: var(--orange-d); }
 	.sp-bar__btn:hover { color: #fff; }
+}
+
+/* =========================================================
+   v1.1 参考サイトの雰囲気に合わせた指定（明朝体・墨色の帯・番号の見出し）
+   ========================================================= */
+body { font-weight: 400; letter-spacing: .02em; }
+.heading__title, .page-hero__title, .svc__title, .set-card__name, .pref__name, .about-page__catch, .article__title,
+.notes-block__title, .entry-content h2, .entry-content h3, .flow__list h3, .guarantee__title, .sets__name, .post-card__title,
+.svc-card__name, .reasons__title, .area-city__name, .sec-head__title, .fv__catch, .price-row__name, .cta-band__title,
+.cta-band__line-title, .area-page__other-title, .form-page__side-title, .svc__options-title, .review-card__service {
+	font-family: var(--mincho); font-weight: 600; letter-spacing: .04em;
+}
+.heading__title { font-size: clamp(24px, 2.8vw, 36px); line-height: 1.5; }
+a { color: var(--accent); }
+.text-link { color: var(--accent); font-weight: 700; }
+
+/* セクションの地 */
+.sec--paper { background: var(--paper); }
+.sec--dark { background: var(--dark); color: #fff; }
+.sec--dark a { color: #fff; }
+
+/* 番号付きの見出し */
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 27em); column-gap: 56px; align-items: end; margin-bottom: 56px; }
+.sec-head__num { grid-column: 1 / -1; font-family: var(--num); font-weight: 700; font-size: clamp(44px, 5.2vw, 68px); line-height: 1; letter-spacing: -.01em; color: var(--accent); margin-bottom: 22px; }
+.sec-head__title { font-size: clamp(28px, 3.4vw, 44px); line-height: 1.45; }
+.sec-head__lead { font-size: 15px; color: var(--ink-2); line-height: 1.9; text-align: right; }
+.sec--dark .sec-head__num { color: var(--accent-light); }
+.sec--dark .sec-head__lead { color: var(--on-dark); }
+
+/* ボタン：角の丸みは小さく */
+.btn { border-radius: var(--radius-s); font-weight: 700; letter-spacing: .06em; min-height: 54px; padding: 12px 28px; }
+.btn--primary, .btn--reserve { background: var(--accent); color: #fff; }
+.btn--primary:hover, .btn--reserve:hover { background: var(--accent-d); color: #fff; }
+.btn--ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
+.btn--ghost:hover { background: var(--ink); color: #fff; }
+.btn--light { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, .5); }
+.btn--light:hover { background: #fff; color: var(--dark); }
+.hd-btn { border-radius: var(--radius-s); letter-spacing: .06em; }
+.hd-btn--reserve { background: var(--accent); }
+.hd-btn--reserve:hover { background: var(--accent-d); }
+.sp-bar__btn { border-radius: var(--radius-s); }
+.sp-bar__btn--reserve { background: var(--accent); }
+
+/* ヘッダー */
+.site-header { background: rgba(255, 255, 255, .98); border-bottom: 1px solid var(--rule); }
+.gnav__list a { font-weight: 500; letter-spacing: .06em; background-image: linear-gradient(var(--accent), var(--accent)); }
+
+/* FV */
+.fv__photo::after { background: linear-gradient(90deg, rgba(248, 247, 242, .97) 0, rgba(248, 247, 242, .9) 30%, rgba(248, 247, 242, .4) 52%, rgba(248, 247, 242, 0) 66%); }
+.fv__badge { display: inline-flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 700; margin-bottom: 26px; }
+.fv__badge span { background: var(--accent); color: #fff; padding: 6px 12px; border-radius: var(--radius-s); }
+.fv__catch { font-weight: 500; font-size: clamp(40px, 5.4vw, 72px); line-height: 1.32; letter-spacing: .04em; }
+.fv__lead { margin-top: 28px; padding-left: 18px; border-left: 2px solid var(--accent); font-size: 15px; font-weight: 400; line-height: 2; color: var(--ink-2); }
+.fv .cta-buttons { margin-top: 34px; }
+.fv__note { margin-top: 18px; font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: .04em; }
+
+/* 実績の帯（FV のすぐ下） */
+.marks { background: #fff; border-bottom: 1px solid var(--rule); }
+.marks__list { display: grid; grid-template-columns: repeat(4, 1fr); }
+.marks__list li { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 34px 16px; text-align: center; }
+.marks__list li + li { border-left: 1px solid var(--rule); }
+.marks__num { font-family: var(--num); font-weight: 700; font-size: clamp(32px, 3.4vw, 46px); line-height: 1; color: var(--accent); }
+.marks__num small { font-family: var(--jp); font-size: 15px; font-weight: 700; margin-left: 4px; color: var(--ink); }
+.marks__num--text { font-family: var(--mincho); font-weight: 600; font-size: clamp(26px, 2.6vw, 34px); letter-spacing: .08em; }
+.marks__label { font-size: 14px; color: var(--ink-2); letter-spacing: .06em; }
+
+/* 01 選ばれる理由 */
+.reasons__list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+.reasons__list li { border-top: 1px solid var(--ink); padding-top: 22px; }
+.reasons__no { font-family: var(--num); font-weight: 700; font-size: 13px; color: var(--accent); letter-spacing: .08em; margin-bottom: 10px; }
+.reasons__title { font-size: 21px; line-height: 1.6; margin-bottom: 12px; }
+.reasons__list p:last-child { font-size: 15px; color: var(--ink-2); }
+
+/* 02 サービスのカード（墨色の地） */
+.svc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 56px; }
+.svc-card { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 24px; align-items: start; }
+.svc-card__media { display: block; aspect-ratio: 4 / 5; overflow: hidden; background: #1a201d; }
+.svc-card__media img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease-out); }
+.svc-card:hover .svc-card__media img { transform: scale(1.04); }
+.svc-card__label { font-family: var(--num); font-weight: 700; font-size: 12px; letter-spacing: .1em; color: var(--accent-light); margin-bottom: 8px; }
+.svc-card__name { font-size: 22px; line-height: 1.5; margin-bottom: 10px; }
+.svc-card__name a { color: #fff; text-decoration: none; }
+.svc-card__desc { font-size: 14px; color: var(--on-dark); line-height: 1.85; }
+.svc-card__spec { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0; padding-top: 14px; border-top: 1px solid var(--rule-dark); }
+.svc-card__spec dt { font-size: 12px; color: var(--on-dark); }
+.svc-card__spec dd { font-weight: 700; font-size: 15px; line-height: 1.5; }
+.svc-card__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; }
+.svc-card__more { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: #fff; text-underline-offset: 5px; }
+.svc-card__more .icon { width: 16px; height: 16px; }
+.svc-card__reserve { display: inline-flex; align-items: center; padding: 8px 20px; border: 1px solid rgba(255, 255, 255, .45); border-radius: 999px; font-size: 13px; font-weight: 700; color: #fff; text-decoration: none; background: rgba(255, 255, 255, .06); }
+.svc-card__reserve:hover { background: #fff; color: var(--dark) !important; }
+.services__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 14px; margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--rule-dark); }
+.services__foot p { margin-right: auto; font-size: 14px; color: var(--on-dark); }
+
+/* 03 水回りセット */
+.sets__box { border-radius: 0; border-color: var(--rule); }
+.sets__tabs { border-radius: var(--radius-s); background: var(--paper); }
+.sets__tab { border-radius: var(--radius-s); }
+.sets__tab-n { font-family: var(--num); font-weight: 700; }
+.sets__rooms li { border-radius: var(--radius-s); }
+.sets__rooms li.is-on { background: var(--accent); border-color: var(--accent); }
+.sets__badge { background: var(--accent); color: #fff; border-radius: var(--radius-s); }
+.yen { font-family: var(--num); font-weight: 700; color: var(--ink); }
+
+/* 04 追い焚き配管 */
+.oidaki__photos figure { border-radius: 0; }
+.oidaki__photos figcaption { border-radius: var(--radius-s); }
+.oidaki__photos figure:last-child figcaption { background: var(--accent); }
+.oidaki__calc { border-top: 1px solid var(--ink); }
+.oidaki__total dt { color: var(--accent); }
+
+/* 05 お客様の声 */
+.review__summary { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 32px; padding: 28px 32px; background: var(--paper); }
+.review__score { display: flex; align-items: center; gap: 14px; }
+.review__num { font-family: var(--num); font-weight: 700; font-size: 52px; line-height: 1; color: var(--ink); }
+.review__stars { display: flex; gap: 3px; color: var(--yellow); }
+.review__stars .icon { width: 26px; height: 26px; }
+.review__meta { font-size: 15px; color: var(--ink-2); margin-right: auto; }
+.review__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 32px; }
+.review-card { border-top: 1px solid var(--ink); padding-top: 20px; }
+.review-card__stars { display: flex; gap: 2px; color: var(--yellow); margin-bottom: 8px; }
+.review-card__stars .icon { width: 18px; height: 18px; }
+.review-card__service { font-size: 15px; margin-bottom: 8px; }
+.review-card__text { margin: 0; font-size: 15px; line-height: 1.95; color: var(--ink-2); }
+.review-card__name { margin-top: 12px; font-size: 13px; color: var(--ink-3); }
+.review__note { margin-top: 20px; font-size: 13px; color: var(--ink-3); }
+
+/* 06 ご予約の流れ（墨色の地） */
+.flow .flow__list { border-top-color: var(--rule-dark); }
+.flow .flow__list li + li { border-left-color: var(--rule-dark); }
+.flow__list li::before { font-family: var(--num); font-weight: 700; color: var(--accent); }
+.flow .flow__list li::before { color: var(--accent-light); }
+.flow .flow__list p { color: var(--on-dark); }
+.guarantee { border: 1px solid var(--accent); border-radius: 0; }
+.guarantee__title { color: var(--accent); }
+.guarantee li::before { background: var(--accent); }
+.flow .guarantee { background: transparent; border-color: var(--rule-dark); }
+.flow .guarantee__title { color: #fff; }
+.flow .guarantee li { color: var(--on-dark); }
+.flow .guarantee li::before { background: var(--accent-light); }
+
+/* 07 対応エリア */
+.area-sec__inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: start; }
+.area-sec__photo { aspect-ratio: 4 / 5; overflow: hidden; }
+.area-sec__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 80%; }
+.area-cities { display: grid; gap: 28px; }
+.area-city { border-top: 1px solid var(--ink); padding-top: 18px; }
+.area-city__name { font-size: 22px; margin-bottom: 8px; }
+.area-city p { font-size: 15px; color: var(--ink-2); }
+.area-sec__more { margin-top: 8px; }
+
+/* お知らせ */
+.news__head { align-items: flex-end; }
+.news__head .sec-head { margin-bottom: 40px; grid-template-columns: 1fr; }
+.news__list { border-top: 1px solid var(--ink); }
+.news__cat, .post-card__cat, .article__cat { border-radius: var(--radius-s); }
+.post-card__thumb { border-radius: 0; }
+
+/* ご相談の帯・フッター */
+.cta-band { background: var(--night); color: #fff; padding: 96px 0; }
+.cta-band__inner { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 56px; align-items: center; }
+.cta-band__title { font-size: clamp(26px, 3vw, 38px); line-height: 1.55; }
+.cta-band__lead { margin: 16px 0 28px; color: var(--on-dark); }
+.cta-band__sub { margin-top: 20px; }
+.cta-band__sub a { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; text-underline-offset: 4px; }
+.cta-band__sub .icon { width: 22px; height: 22px; }
+.cta-band__line { background: #fff; color: var(--ink); padding: 30px 28px; }
+.cta-band__line-title { font-size: 19px; line-height: 1.6; }
+.cta-band__line-id { margin: 8px 0 18px; font-family: var(--num); color: var(--ink-2); font-size: 15px; }
+
+.site-footer { background: var(--night); color: var(--on-dark); padding: 64px 0 0; font-size: 14px; border-top: 1px solid var(--rule-dark); }
+.site-footer__inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; }
+.site-footer__logo img { width: 240px; }
+.site-footer__desc { margin: 18px 0; line-height: 1.9; }
+.site-footer__line { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; text-decoration: none; border: 1px solid rgba(255, 255, 255, .3); border-radius: var(--radius-s); padding: 8px 18px; }
+.site-footer__line .icon { width: 18px; height: 18px; color: #3fd27c; }
+.site-footer__line:hover { color: #fff; border-color: #fff; }
+.site-footer__nav { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.site-footer__h { color: #fff; font-family: var(--mincho); font-weight: 600; margin-bottom: 10px; }
+.site-footer__nav li a { display: inline-block; padding: 4px 0; color: var(--on-dark); text-decoration: none; }
+.site-footer__nav li a:hover { color: #fff; text-decoration: underline; }
+.site-footer__copy { text-align: center; margin-top: 56px; padding: 18px; border-top: 1px solid rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .55); }
+
+/* 下層ページ */
+.page-hero__band { border-radius: 0; }
+.page-hero__band::before { background: var(--paper); }
+.page-hero__title { font-weight: 600; }
+.page-hero__icon { color: var(--accent); }
+.svc__table, .notes-block__title, .about-table, .price-list, .entry-content h2 { border-top-width: 1px; }
+.notes-block__title, .entry-content h2 { border-bottom-width: 1px; }
+.svc__media, .set-card, .pref, .form-page__notes, .form-page__line, .price-page__sets, .contact-form--fallback, .price-index a { border-radius: 0; }
+.svc__table tr.is-price td { color: var(--ink); font-family: var(--num); font-weight: 700; }
+.pref--main { border-color: var(--accent); }
+.pref__cities li { border-radius: var(--radius-s); }
+.cat-filter a, .pagination .page-numbers { border-radius: var(--radius-s); }
+.cf7 input[type="text"], .cf7 input[type="email"], .cf7 input[type="tel"], .cf7 input[type="date"], .cf7 select, .cf7 textarea { border-radius: var(--radius-s); border-width: 1px; }
+.cf7-field--choice label { border-radius: var(--radius-s); border-width: 1px; }
+.cf7-badge--req { background: var(--accent); }
+.cf7-submit input[type="submit"], .cf7-submit .wpcf7-submit { background: var(--accent); border-radius: var(--radius-s); font-weight: 700; letter-spacing: .06em; }
+.cf7-submit .wpcf7-submit:hover { background: var(--accent-d); }
+.set-card--pick::before { background: var(--accent); color: #fff; border-radius: var(--radius-s); }
+.area-local { margin-bottom: 64px; }
+.area-local__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.svc-area { margin-top: 28px; padding: 18px 22px; background: var(--paper); font-size: 15px; color: var(--ink-2); }
+.svc-area strong { color: var(--ink); }
+
+@media (max-width: 1080px) {
+	.svc-grid { grid-template-columns: minmax(0, 1fr); }
+	.reasons__list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
+}
+@media (max-width: 960px) {
+	.sec-head { grid-template-columns: minmax(0, 1fr); row-gap: 16px; margin-bottom: 40px; }
+	.sec-head__lead { text-align: left; }
+	.cta-band__inner, .site-footer__inner, .area-sec__inner { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+	.area-sec__photo { aspect-ratio: 16 / 9; }
+	.marks__list { grid-template-columns: repeat(2, 1fr); }
+	.marks__list li:nth-child(3) { border-left: 0; }
+	.marks__list li:nth-child(n+3) { border-top: 1px solid var(--rule); }
+	.review__list, .area-local__grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 768px) {
+	.fv__photo::after { background: linear-gradient(180deg, rgba(248, 247, 242, 0) 55%, rgba(248, 247, 242, .85) 88%, var(--paper) 100%); }
+	.fv { background: var(--paper); }
+	.fv__catch { font-size: clamp(32px, 9.4vw, 44px); }
+	.fv__badge { font-size: 13px; margin-bottom: 18px; }
+	.marks__list li { padding: 22px 8px; }
+	.reasons__list { grid-template-columns: minmax(0, 1fr); }
+	.svc-card { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; }
+	.svc-card__name { font-size: 19px; }
+	.svc-card__spec { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+	.services__foot .btn { flex: 1 1 100%; }
+	.services__foot p { margin-right: 0; }
+	.review__summary { padding: 22px 18px; }
+	.review__num { font-size: 42px; }
+	.site-footer__nav { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }
 
 /* ---------- 動きを減らす設定 ---------- */

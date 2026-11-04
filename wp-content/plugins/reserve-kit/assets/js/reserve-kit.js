@@ -1,5 +1,5 @@
 /*!
- * ReserveKit v1.2.0 — どんなサイトにも埋め込める予約ウィジェット
+ * ReserveKit v1.6.1 — どんなサイトにも埋め込める予約ウィジェット
  * (c) 2026 Biz Studio — MIT License
  *
  * 使い方（最小）:
@@ -10,7 +10,7 @@
 (function (global) {
   'use strict';
 
-  const VERSION = '1.3.1';
+  const VERSION = '1.6.1';
 
   /* =========================================================
    * utils
@@ -105,7 +105,19 @@
       doneTitlePending: '仮予約を受け付けました', doneTextPending: 'ご希望の日時を確認し、確定のご連絡をメールでお送りします。\n確定のご連絡まで、しばらくお待ちください。',
       pendingNote: 'このご予約は仮予約です。お店が日程を確認してから確定し、メールでお知らせします。', requestNumber: '受付番号',
       meeting: 'オンライン会議', meetingJoin: '会議に参加する', meetingLater: '会議の URL は確定メールでお送りします', meetingLaterNow: '会議の URL は確認メールでお送りします', online: 'オンライン', passcode: 'パスコード',
-      providers: { zoom: 'Zoom', meet: 'Google Meet', teams: 'Microsoft Teams', fixed: 'オンライン会議' }
+      providers: { zoom: 'Zoom', meet: 'Google Meet', teams: 'Microsoft Teams', fixed: 'オンライン会議' },
+      payNext: 'お支払いへ進む', payAuthNext: 'カード情報を入力してリクエストする',
+      payTitle: 'お支払いについて', payMethods: 'お支払い方法：{list}',
+      payNote: 'このあと Stripe のお支払いページに移動します。カード番号などは当サイトには届かず、保存もされません。お支払いが完了した時点でご予約が確定します。',
+      payNoteAuth: 'このあと Stripe のページでカード情報を入力します。この時点ではカードの与信（仮押さえ）だけを行い、お店がご予約を確定した時点で決済されます。お断りの場合は請求されません。',
+      payLegal: '特定商取引法に基づく表記', payTest: 'テストモード：実際の請求は発生しません',
+      methodNames: { card: 'クレジットカード（Apple Pay・Google Pay）', konbini: 'コンビニ払い', paypay: 'PayPay' },
+      redirecting: 'お支払いページに移動しています…', checking: 'お支払いを確認しています…',
+      payCancelled: 'お支払いが完了しなかったため、ご予約は確定していません。お手数ですが、もう一度日時をお選びください。',
+      payExpired: 'お支払いが確認できなかったため、ご予約は取り消されました。お手数ですが、もう一度お申し込みください。',
+      paidLabel: 'お支払い済み', authLabel: 'カードの与信（仮押さえ）済み',
+      payWaitTitle: 'お支払いをお待ちしています', payWaitText: 'コンビニでのお支払いが確認できしだい、ご予約が確定します。\nお支払い方法（払込票）はメールでもお送りしました。', payVoucher: '払込票を表示する', payDeadline: 'お支払い期限：{d}',
+      payProcTitle: 'お支払いを確認しています', payProcText: '確認が済みしだい、ご予約確定のメールをお送りします。\nしばらく経ってもメールが届かない場合は、お店にお問い合わせください。'
     },
     en: {
       steps: { service: 'Service', staff: 'Staff', quantity: 'Guests', datetime: 'Date & time', dates: 'Dates', form: 'Your details', confirm: 'Confirm' },
@@ -137,7 +149,19 @@
       doneTitlePending: 'Request received', doneTextPending: 'We will check your preferred times and confirm by email.',
       pendingNote: 'This is a request. Your booking is confirmed once we approve it.', requestNumber: 'Request no.',
       meeting: 'Online meeting', meetingJoin: 'Join meeting', meetingLater: 'The meeting link will be sent with the confirmation email', meetingLaterNow: 'The meeting link will be sent by email', online: 'Online', passcode: 'Passcode',
-      providers: { zoom: 'Zoom', meet: 'Google Meet', teams: 'Microsoft Teams', fixed: 'Online meeting' }
+      providers: { zoom: 'Zoom', meet: 'Google Meet', teams: 'Microsoft Teams', fixed: 'Online meeting' },
+      payNext: 'Continue to payment', payAuthNext: 'Enter card and send request',
+      payTitle: 'Payment', payMethods: 'Payment methods: {list}',
+      payNote: 'You will be taken to a secure Stripe payment page. Your card details are never sent to or stored on this site. Your booking is confirmed once payment is complete.',
+      payNoteAuth: 'You will enter your card on a secure Stripe page. Only an authorization hold is placed now; you are charged when the booking is confirmed. If it is declined, you will not be charged.',
+      payLegal: 'Legal notice (Specified Commercial Transactions Act)', payTest: 'Test mode: no real charge will be made',
+      methodNames: { card: 'Card (Apple Pay / Google Pay)', konbini: 'Konbini', paypay: 'PayPay' },
+      redirecting: 'Redirecting to the payment page…', checking: 'Checking your payment…',
+      payCancelled: 'Payment was not completed, so your booking is not confirmed. Please choose a time again.',
+      payExpired: 'We could not confirm your payment, so the booking was cancelled. Please book again.',
+      paidLabel: 'Paid', authLabel: 'Card authorized',
+      payWaitTitle: 'Awaiting payment', payWaitText: 'Your booking will be confirmed once we receive your payment at the convenience store.', payVoucher: 'Show payment slip', payDeadline: 'Pay by: {d}',
+      payProcTitle: 'Checking your payment', payProcText: 'We will email you once your payment is confirmed.'
     }
   };
   const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -212,6 +236,7 @@
     stay: { minNights: 1, maxNights: 14, checkInTime: '15:00', checkOutTime: '10:00' },
     pricing: { currency: 'JPY', taxLabel: '税込', unit: 'fixed', show: true },
     fields: DEFAULT_FIELDS,
+    payment: { enabled: false, note: '', legalUrl: '', legalLabel: '', methods: ['card'], konbiniDays: 3, test: false }, // 事前決済（WordPress 版＋Stripe）
     policy: { title: '', text: '', requireAgree: false, label: '', privacyUrl: '', privacyLabel: '', requirePrivacy: true }, // privacyUrl を入れるとプライバシーポリシーへのリンクと同意チェックを出す
     demoNotice: true,          // 本番のサイトでデモ保存（backend.type: 'local'）を使っているときに警告を出す
     texts: {},
@@ -674,6 +699,18 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
 .rk-cand button svg{width:13px;height:13px;stroke:currentColor}
 .rk-rank{font-size:.68em;font-weight:600;line-height:1.2}
 .rk-note{font-size:.84em;color:var(--rk-muted);margin:0 0 calc(var(--rk-gap) * .8)}
+.rk-pay{margin-top:calc(var(--rk-gap) * 1.1);padding:.9em 1em;border-radius:var(--rk-radius);border:1px solid var(--rk-border);background:var(--rk-surface);font-size:.86em}
+.rk-pay h4{margin:0 0 .4em;font-size:1em}
+.rk-pay p{margin:.3em 0;color:var(--rk-muted)}
+.rk-pay a{color:var(--rk-primary)}
+.rk-pay-test{display:inline-block;padding:.15em .6em;border-radius:99px;background:color-mix(in srgb,var(--rk-danger) 14%,var(--rk-surface));color:var(--rk-danger)!important;font-weight:600}
+.rk-paid{display:flex;flex-direction:column;align-items:center;gap:.3em;margin:0 auto calc(var(--rk-gap) * 1.4);max-width:520px}
+.rk-paid small{color:var(--rk-muted);font-size:.8em}
+.rk-paid b{font-size:1.25em;font-variant-numeric:tabular-nums}
+.rk-wait{display:flex;align-items:center;justify-content:center;gap:.7em;padding:calc(var(--rk-gap) * 3) 0;color:var(--rk-muted)}
+.rk-spin{width:1.2em;height:1.2em;border-radius:50%;border:2px solid var(--rk-border);border-top-color:var(--rk-primary);animation:rk-spin .8s linear infinite}
+@keyframes rk-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.rk-spin{animation-duration:2.4s}}
 .rk-pending{display:flex;gap:.6em;align-items:flex-start;margin-top:calc(var(--rk-gap) * 1.1);padding:.8em 1em;border-radius:var(--rk-radius);background:color-mix(in srgb,var(--rk-accent) 12%,var(--rk-surface));font-size:.86em}
 .rk-meet{display:flex;flex-direction:column;align-items:center;gap:.4em;padding:calc(var(--rk-gap) * 1.1);margin:0 auto calc(var(--rk-gap) * 1.4);max-width:520px;border-radius:var(--rk-radius);border:1px solid var(--rk-border);background:var(--rk-surface)}
 .rk-meet small{color:var(--rk-muted);font-size:.78em}
@@ -806,7 +843,9 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       },
       async submit(cfg, p) {
         return http(`${this.base(cfg)}/bookings`, { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, cfg.backend.headers || {}), body: JSON.stringify(p) });
-      }
+      },
+      async paymentReturn(cfg, q) { return http(`${this.base(cfg)}/payment-return?${qs(q)}`, { headers: cfg.backend.headers || {} }); },
+      async paymentCancel(cfg, q) { return http(`${this.base(cfg)}/payment-cancel`, { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, cfg.backend.headers || {}), body: JSON.stringify(q) }); }
     },
     gas: {
       async availability(cfg, from, to) {
@@ -815,7 +854,9 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       async submit(cfg, p) {
         // text/plain にするとプリフライト（CORS）が発生しない
         return http(cfg.backend.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(p) });
-      }
+      },
+      async paymentReturn(cfg, q) { return http(`${cfg.backend.url}?${qs(Object.assign({ action: 'payment-return' }, q))}`); },
+      async paymentCancel(cfg, q) { return http(cfg.backend.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action: 'payment-cancel' }, q)) }); }
     },
     webhook: {
       async availability() { return { bookings: [], blocks: [] }; },
@@ -828,7 +869,9 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
   };
   Backends.wordpress = {
     availability(cfg, f, t) { return Backends.rest.availability(withUrl(cfg, '/wp-json/reserve-kit/v1'), f, t); },
-    submit(cfg, p) { return Backends.rest.submit(withUrl(cfg, '/wp-json/reserve-kit/v1'), p); }
+    submit(cfg, p) { return Backends.rest.submit(withUrl(cfg, '/wp-json/reserve-kit/v1'), p); },
+    paymentReturn(cfg, q) { return Backends.rest.paymentReturn(withUrl(cfg, '/wp-json/reserve-kit/v1'), q); },
+    paymentCancel(cfg, q) { return Backends.rest.paymentCancel(withUrl(cfg, '/wp-json/reserve-kit/v1'), q); }
   };
   function withUrl(cfg, fallback) { return cfg.backend.url ? cfg : merge({}, cfg, { backend: { url: fallback } }); }
 
@@ -884,6 +927,7 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       this.root.addEventListener('change', this._onInput);
       document.addEventListener('keydown', this._onKey);
       this.setConfig(config);
+      this.checkPaymentReturn();
     }
 
     /* ---------- lifecycle ---------- */
@@ -1022,6 +1066,8 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
         if (token !== this._loadToken) return;
         s.bookings = (data && data.bookings) || [];
         s.blocks = (data && data.blocks) || [];
+        // 事前決済の設定はサーバー側（GAS の SETTINGS.PAYMENT）を正とする
+        if (data && data.payment && typeof data.payment === 'object') c.payment = Object.assign({}, c.payment, data.payment);
       } catch (e) {
         console.warn('[ReserveKit] 空き状況を取得できませんでした', e);
         if (typeof c.onError === 'function') c.onError(e, this);
@@ -1392,6 +1438,49 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       return { services: this.selectedServices(), staffId: s.staffId, quantity: s.qty, slot: s.slot, candidates: s.cands.slice(), checkIn: s.checkIn, checkOut: s.checkOut, form: Object.assign({}, s.form), total: this.total() };
     }
 
+    /* ---------- 事前決済から戻ってきたとき ---------- */
+    checkPaymentReturn() {
+      if (typeof location === 'undefined' || typeof URLSearchParams === 'undefined') return;
+      const c = this.cfg; const q = new URLSearchParams(location.search);
+      const mode = q.get('rk_pay');
+      if (!mode || q.get('rk_form') !== (c.backend.formId || 'default')) return;
+      const b = q.get('rk_b') || ''; const k = q.get('rk_k') || ''; const sid = q.get('rk_sid') || '';
+      try { ['rk_pay', 'rk_form', 'rk_b', 'rk_k', 'rk_sid'].forEach((x) => q.delete(x)); const rest = q.toString(); history.replaceState(history.state, '', location.pathname + (rest ? `?${rest}` : '') + location.hash); } catch (e) { /* noop */ }
+      const backend = Backends[c.backend.type];
+      if (!backend || !backend.paymentReturn) return;
+      let snap = null;
+      try { snap = JSON.parse(sessionStorage.getItem(`reservekit:pay:${b}`) || 'null'); } catch (e) { /* noop */ }
+      const s = this.state;
+      if (snap && snap.state) Object.assign(s, snap.state);
+      s.view = 'checking';
+      if (c.mode === 'modal') this.open();
+      this.render(true);
+      if (c.mode !== 'modal') setTimeout(() => this.host.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+      const job = mode === 'cancel' ? backend.paymentCancel(c, { b, k }) : backend.paymentReturn(c, { b, k, sid });
+      job.then((res) => {
+        if (!res || res.ok === false) throw Object.assign(new Error((res && res.message) || 'error'), res || {});
+        try { sessionStorage.removeItem(`reservekit:pay:${b}`); } catch (e) { /* noop */ }
+        if (mode === 'cancel' || res.status === 'expired' || res.status === 'cancelled') {
+          s.view = 'steps'; s.flash = mode === 'cancel' ? c.t.payCancelled : c.t.payExpired;
+          s.slot = null; s.cands = []; s.checkIn = null; s.checkOut = null;
+          const i = c.steps.findIndex((x) => x === 'datetime' || x === 'dates');
+          if (i >= 0 && c.layout === 'wizard') s.stepIndex = i;
+          this.loadAvailability();
+        } else {
+          const sm = res.summary || {};
+          const payload = Object.assign({ bookingType: sm.bookingType, serviceName: sm.serviceName, staffName: sm.staffName, start: sm.start, end: sm.end, checkIn: sm.checkIn, checkOut: sm.checkOut, quantity: sm.quantity, meeting: sm.meeting || '', business: c.business.name || '', location: c.business.location || '', timezone: c.business.timezone, quantityLabel: c.quantity.label, quantityUnit: c.quantity.unit }, (snap && snap.payload) || {}, { bookingNumber: res.bookingNumber, start: sm.start || (snap && snap.payload && snap.payload.start), end: sm.end || (snap && snap.payload && snap.payload.end) });
+          s.result = Object.assign({}, res, { payload, restored: !!snap });
+          s.view = 'done';
+          this.emit('complete', s.result);
+          if (typeof c.onComplete === 'function') c.onComplete(s.result, this);
+        }
+        this.render(true);
+      }).catch((e) => {
+        s.view = 'steps'; s.flash = (e && e.code && e.message) ? e.message : c.t.errorSubmit;
+        this.render(true);
+      });
+    }
+
     /* ---------- submit ---------- */
     buildPayload() {
       const c = this.cfg; const s = this.state; const ss = this.selectedServices();
@@ -1440,6 +1529,7 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
         capacityScope: c.business.capacityScope,
         bufferMinutes: Number(c.business.bufferMinutes) || 0,
         total: this.hasPrice() ? this.total() : null,
+        paymentRequested: this.payActive(),
         currency: c.pricing.currency,
         customer: { name: s.form.name || '', email: s.form.email || '', tel: s.form.tel || '' },
         fields: c.fields.filter((f) => f.type !== 'hidden' || s.form[f.name] != null).map((f) => Object.assign({ name: f.name, label: f.label, value: Array.isArray(s.form[f.name]) ? s.form[f.name].join('、') : (f.type === 'checkbox' ? (s.form[f.name] ? 'はい' : '') : (s.form[f.name] == null ? '' : String(s.form[f.name]))) }, f.sensitive ? { sensitive: true } : {})),
@@ -1477,6 +1567,15 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       try {
         const res = await backend.submit.call(backend, c, payload);
         if (!res || res.ok === false) throw Object.assign(new Error((res && res.message) || 'error'), res || {});
+        if (res.paymentUrl) {
+          // お支払いページへ。戻ってきたときに内容を表示できるよう、選んだ内容をこのタブに残しておく
+          payload.bookingNumber = res.bookingNumber;
+          try { sessionStorage.setItem(`reservekit:pay:${res.bookingNumber}`, JSON.stringify({ state: { services: s.services, staffId: s.staffId, qty: s.qty, date: s.date, slot: s.slot, cands: s.cands, checkIn: s.checkIn, checkOut: s.checkOut, form: s.form }, payload })); } catch (e) { /* noop */ }
+          this.emit('payment', { bookingNumber: res.bookingNumber, url: res.paymentUrl });
+          s.view = 'redirect'; this.render(true);
+          location.assign(res.paymentUrl);
+          return;
+        }
         payload.bookingNumber = res.bookingNumber || res.id || bookingNumber();
         s.result = Object.assign({}, res, { payload });
         s.view = 'done';
@@ -1545,6 +1644,7 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       let html = `<div class="rk rk-${esc(c.layout)}" part="root" data-card="${esc(c.cardStyle)}" data-transparent="${th.transparent ? 1 : 0}" data-template="${esc(c.template || 'custom')}">`;
       html += this.rHead();
       if (s.view === 'done') html += this.rDone();
+      else if (s.view === 'redirect' || s.view === 'checking') html += `<div class="rk-section rk-wait" part="payment-wait" role="status"><span class="rk-spin" aria-hidden="true"></span>${esc(s.view === 'redirect' ? c.t.redirecting : c.t.checking)}</div>`;
       else if (c.layout === 'onepage') html += this.rOnepage();
       else html += this.rWizard();
       html += '</div>';
@@ -1607,7 +1707,20 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       }
     }
 
-    submitLabel() { const c = this.cfg; return c.approval.enabled && !(c.texts && c.texts.submit) ? c.t.submitRequest : c.t.submit; }
+    submitLabel() {
+      const c = this.cfg;
+      if (this.payActive()) return c.approval.enabled ? c.t.payAuthNext : c.t.payNext;
+      return c.approval.enabled && !(c.texts && c.texts.submit) ? c.t.submitRequest : c.t.submit;
+    }
+    // コンビニ払いは、支払い期限（konbiniDays 日）が予約日より前に来るときだけ（サーバー側と同じ条件）
+    konbiniOk() {
+      const c = this.cfg; const s = this.state; const total = this.total();
+      if (c.approval.enabled || total < 120 || total > 300000) return false;
+      const start = c.bookingType === 'range' ? (s.checkIn ? `${s.checkIn}T${c.stay.checkInTime || '15:00'}` : null) : (this.multi() ? s.cands[0] : s.slot);
+      if (!start) return false;
+      return stamp(start) - stamp(nowIn(c.business.timezone)) > ((Number(c.payment.konbiniDays) || 3) + 1) * 1440;
+    }
+    payActive() { return !!(this.cfg.payment && this.cfg.payment.enabled) && this.hasPrice(); }
 
     rMini() {
       const c = this.cfg; const s = this.state; const parts = [];
@@ -1878,10 +1991,25 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
       return `<div class="rk-sum" part="summary"><dl>${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join('')}</dl>${total}</div>`;
     }
 
+    // 別のタブなどで戻ってきて、選んだ内容が残っていないときの簡単なまとめ
+    rSummaryLite(p) {
+      const c = this.cfg; const rows = [];
+      if (p.bookingType === 'range' && p.checkIn) rows.push([c.t.stayLabel, `${esc(this.dateText(p.checkIn, true))}〜${esc(this.dateText(p.checkOut, true))}`]);
+      else if (p.start) rows.push([c.t.dateLabel, `${esc(this.dateText(p.start.slice(0, 10), true))} ${esc(p.start.slice(11, 16))}〜${esc((p.end || '').slice(11, 16))}`]);
+      if (p.serviceName) rows.push([c.t.steps.service, esc(p.serviceName)]);
+      if (p.staffName) rows.push([c.t.staffLabel, esc(p.staffName)]);
+      return rows.length ? `<div class="rk-sum" part="summary"><dl>${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join('')}</dl></div>` : '';
+    }
+
     rConfirm(onepage) {
       const c = this.cfg; const s = this.state; const p = c.policy || {};
       let h = this.rSummary(!onepage);
       if (c.approval.enabled) h += `<div class="rk-pending" part="pending-note">${esc(c.t.pendingNote)}</div>`;
+      if (c.payment && c.payment.enabled && this.hasPrice()) {
+        const pay = c.payment;
+        const methods = (c.approval.enabled ? ['card'] : (pay.methods && pay.methods.length ? pay.methods : ['card'])).filter((m) => m !== 'konbini' || this.konbiniOk()).map((m) => (c.t.methodNames && c.t.methodNames[m]) || m).join('／');
+        h += `<div class="rk-pay" part="payment"><h4>${esc(c.t.payTitle)}</h4><p>${esc(fmt(c.t.payMethods, { list: methods }))}</p><p>${esc(c.approval.enabled ? c.t.payNoteAuth : c.t.payNote)}</p>${pay.note ? `<p>${nl2br(pay.note)}</p>` : ''}${pay.legalUrl ? `<p><a href="${esc(pay.legalUrl)}" target="_blank" rel="noopener" part="legal-link">${esc(pay.legalLabel || c.t.payLegal)}</a></p>` : ''}${pay.test ? `<p class="rk-pay-test">${esc(c.t.payTest)}</p>` : ''}</div>`;
+      }
       if (p.text || p.privacyUrl) {
         const link = p.privacyUrl ? `<a href="${esc(p.privacyUrl)}" target="_blank" rel="noopener" part="privacy-link">${esc(p.privacyLabel || c.t.privacyLink)}</a>` : '';
         h += `<div class="rk-policy" part="policy"><h4>${esc(p.title || c.t.policyTitle)}</h4>${p.text ? `<p>${nl2br(p.text)}</p>` : ''}`
@@ -1896,9 +2024,16 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
     rDone() {
       const c = this.cfg; const r = this.state.result || {}; const p = r.payload || {};
       const d = c.done || {};
-      const pending = r.status ? r.status === 'pending' : c.approval.enabled;
-      const title = pending ? (d.pendingTitle || c.t.doneTitlePending) : (d.title || c.t.doneTitle);
-      const msg = pending ? (d.pendingMessage || c.t.doneTextPending) : (d.message || c.t.doneText);
+      const pay = r.payment || null;
+      const waiting = r.status === 'awaiting_payment' || r.status === 'awaiting_auth';
+      const pending = waiting || (r.status ? r.status === 'pending' : c.approval.enabled);
+      const konbini = waiting && pay && pay.status === 'waiting';
+      let title = pending ? (d.pendingTitle || c.t.doneTitlePending) : (d.title || c.t.doneTitle);
+      let msg = pending ? (d.pendingMessage || c.t.doneTextPending) : (d.message || c.t.doneText);
+      if (waiting) { title = konbini ? c.t.payWaitTitle : c.t.payProcTitle; msg = konbini ? c.t.payWaitText : c.t.payProcText; }
+      let payBox = '';
+      if (pay && pay.amount != null && (pay.status === 'paid' || pay.status === 'authorized')) payBox = `<div class="rk-paid" part="paid"><small>${esc(pay.status === 'paid' ? c.t.paidLabel : c.t.authLabel)}</small><b>${this.money(pay.amount)}</b>${pay.method && c.t.methodNames && c.t.methodNames[pay.method] ? `<small>${esc(c.t.methodNames[pay.method])}</small>` : ''}</div>`;
+      if (konbini) payBox = `<div class="rk-paid" part="paid">${pay.voucherUrl ? `<a class="rk-btn rk-btn-primary" href="${esc(pay.voucherUrl)}" target="_blank" rel="noopener">${esc(c.t.payVoucher)}</a>` : ''}${pay.deadline ? `<small>${esc(fmt(c.t.payDeadline, { d: pay.deadline }))}</small>` : ''}</div>`;
       let meet = '';
       if (r.meetingUrl) meet = `<div class="rk-meet" part="meeting"><small>${esc(c.t.meeting)}（${esc(this.providerName(p.meeting || 'fixed'))}）</small><a class="rk-btn rk-btn-primary" href="${esc(r.meetingUrl)}" target="_blank" rel="noopener">${esc(c.t.meetingJoin)}</a><a class="rk-meet-url" href="${esc(r.meetingUrl)}" target="_blank" rel="noopener">${esc(r.meetingUrl)}</a>${r.meetingPassword ? `<small>${esc(c.t.passcode)}：${esc(r.meetingPassword)}</small>` : ''}</div>`;
       else if (p.meeting) meet = `<div class="rk-meet" part="meeting"><small>${esc(c.t.meeting)}（${esc(this.providerName(p.meeting))}）</small><span>${esc(pending ? c.t.meetingLater : c.t.meetingLaterNow)}</span></div>`;
@@ -1907,8 +2042,9 @@ select.rk-input{appearance:none;background-image:linear-gradient(45deg,transpare
         <h3>${esc(title)}</h3>
         <p>${nl2br(msg)}</p>
         ${p.bookingNumber ? `<div class="rk-number"><small>${esc(pending ? c.t.requestNumber : c.t.bookingNumber)}</small><b>${esc(p.bookingNumber)}</b></div>` : ''}
+        ${payBox}
         ${meet}
-        ${this.rSummary(false)}
+        ${r.restored === false ? this.rSummaryLite(p) : this.rSummary(false)}
         <div class="rk-done-actions">
           ${!pending && d.showCalendarLinks !== false && p.start ? `<a class="rk-btn rk-btn-outline" part="button-calendar" href="${esc(this.googleUrl(p))}" target="_blank" rel="noopener">${esc(c.t.addGoogle)}</a><button type="button" class="rk-btn rk-btn-outline" part="button-ics" data-act="ics">${esc(c.t.addIcs)}</button>` : ''}
           <button type="button" class="rk-btn rk-btn-ghost" data-act="again">${esc(c.t.again)}</button>

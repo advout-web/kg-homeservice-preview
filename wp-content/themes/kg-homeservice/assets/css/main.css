@@ -771,6 +771,11 @@ a { color: var(--accent); }
 .site-footer__nav li a:hover { color: #fff; text-decoration: underline; }
 .site-footer__copy { text-align: center; margin-top: 56px; padding: 18px; border-top: 1px solid rgba(255, 255, 255, .1); color: rgba(255, 255, 255, .55); }
 
+/* スマホ下部の LINE・WEB予約ボタンは、スマホ幅（768px 以下）でだけ表示する */
+@media (min-width: 769px) {
+	.sp-bar { display: none; }
+}
+
 /* 下層ページ */
 .page-hero__band { border-radius: 0; }
 .page-hero__band::before { background: var(--paper); }

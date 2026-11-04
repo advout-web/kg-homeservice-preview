@@ -818,6 +818,12 @@ a { color: var(--accent); }
 	.fv { background: var(--paper); }
 	.fv__catch { font-size: clamp(32px, 9.4vw, 44px); }
 	.fv__badge { font-size: 13px; margin-bottom: 18px; }
+	/* スマホでもキャッチコピーを写真の上に重ねる（写真を縦に伸ばし、下側をぼかして文字を読みやすくする） */
+	.fv__photo, .fv__grime, .fv__squeegee, .fv__glint { height: 122vw; }
+	.fv__photo img { object-position: 58% 40%; }
+	.fv__photo::after { background: linear-gradient(180deg, rgba(248, 247, 242, 0) 34%, rgba(248, 247, 242, .55) 52%, rgba(248, 247, 242, .86) 72%, var(--paper) 100%); }
+	.fv__body { padding-top: 60vw; }
+	.fv__catch { text-shadow: 0 0 14px rgba(248, 247, 242, .9), 0 0 4px rgba(248, 247, 242, .8); }
 	.marks__list li { padding: 22px 8px; }
 	.reasons__list { grid-template-columns: minmax(0, 1fr); }
 	.svc-card { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; }
